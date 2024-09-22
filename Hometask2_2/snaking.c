@@ -4,12 +4,11 @@
 #include <time.h>
 
 char playingfield[14][21];
-int i, asterisk = 0, speed;
-float max_speed=6;
+int i, asterisk=0, speed;
 char key;
 int ox, oy;
 int x = 5, y = 11;
-int ax = 8, ay = 3;
+int ax = 8, ay=3;
 
 struct snakestail
 {
@@ -42,30 +41,34 @@ int main()
         else
             playingfield[y][x] = '@';
 
-        if (asterisk > 0)
+        if (asterisk>0)
         {
-            for (i = 0; i < asterisk; i++)
-                playingfield[snakestail_old[i].old_y][snakestail_old[i].old_x] = '#';
-        }
+            for (i=0;i<asterisk;i++)
+            playingfield[snakestail_old[i].old_y][snakestail_old[i].old_x]='#';
+        }    
 
         playingfield[ay][ax] = '*';
 
         srand(time(NULL));
 
-        move(0, 0);
 
-        printw("Asterisk: %5d\n", asterisk);
-        printw("Level:        ");
-        lvl(asterisk);
+        move (0,0);
+
+        printw("Asterisk: %5d\n",asterisk);
+        printw("Level:        "); lvl(asterisk);
 
         for (i = 0; i < 14; i++)
             printw("%s\n", playingfield[i]);
         refresh();
 
-        if ((asterisk >= 0) && (asterisk < 2))
-            speed = 10;
-        else
-            speed = 10 / asterisk;
+        if ((asterisk >=0) && (asterisk < 3))
+        speed = 10;
+        else if ((asterisk >=3) && (asterisk < 6))
+        speed = 7;
+        else if ((asterisk >=6) && (asterisk < 9))
+        speed = 5;
+        else if (asterisk >=9)
+        speed = 3;
 
         curs_set(0);
         noecho();
@@ -91,27 +94,25 @@ int main()
         case 'd':
             x++;
             break;
-        case ERR:
-            snakemovement();
+        case ERR: snakemovement();
         }
         if (playingfield[y][x] == '#')
         {
-            x = ox;
-            y = oy;
+            x=ox;
+            y=oy;
         }
 
         if (playingfield[y][x] != '#')
         {
-            for (i = asterisk; i >= 0; i--)
-            {
-                snakestail_old[i + 1].old_x = snakestail_old[i].old_x;
-                snakestail_old[i + 1].old_y = snakestail_old[i].old_y;
+            for (i = asterisk; i>=0;i--){
+            snakestail_old[i+1].old_x = snakestail_old[i].old_x;
+            snakestail_old[i+1].old_y = snakestail_old[i].old_y;
             }
             snakestail_old[0].old_x = ox;
             snakestail_old[0].old_y = oy;
         }
 
-        if (playingfield[y][x] == '#')
+        if (playingfield[y][x]== '#')
         {
             cbreak();
             move(9, 5);
@@ -121,17 +122,17 @@ int main()
             break;
         }
 
-        if ((x == ax) && (y == ay))
+        if ((x==ax) && (y==ay))
         {
-            ax = rand() % (18 - 1) + 1;
-            ay = rand() % (12 - 1) + 1;
+            ax=rand() % (18-1) + 1;
+            ay=rand() % (12-1) + 1;
             asterisk++;
         }
 
-        if (((ax == x) && (y == ay)) || (playingfield[ay][ax] == '#') || ((ax == ox) && (ay == oy)))
+        if (((ax==x) && (y==ay)) || (playingfield[ay][ax]=='#') ||((ax == ox)&& (ay==oy)))
         {
-            ax = rand() % (18 - 1) + 1;
-            ay = rand() % (12 - 1) + 1;
+            ax=rand() % (18-1) + 1;
+            ay=rand() % (12-1) + 1;
         }
     } while (key != 'q');
 
@@ -141,23 +142,21 @@ int main()
 
 void snakemovement(void)
 {
-    if (playingfield[y][x] == '^')
-        y--;
-    else if (playingfield[y][x] == 'v')
-        y++;
-    else if (playingfield[y][x] == '<')
-        x--;
-    else if (playingfield[y][x] == '>')
-        x++;
+    if (playingfield[y][x]=='^') y--;
+    else if (playingfield[y][x]=='v') y++;
+    else if (playingfield[y][x]=='<') x--;
+    else if (playingfield[y][x]=='>') x++;
 }
 
 char lvl(int asterisk)
 {
+    if ((asterisk >=0) && (asterisk < 3))
+        printw("1 (x1.00)\n");
+        else if ((asterisk >=3) && (asterisk < 6))
+        printw("1 (x1.50)\n");
+        else if ((asterisk >=6) && (asterisk < 9))
+        printw("1 (x2.00)\n");
+        else if (asterisk >=9)
+        printw("1 (x2.50)\n");
 
-    if ((asterisk >= 0) && (asterisk < 2))
-        printw("(x1.00)\n");
-    else if ((asterisk >= 2) && (asterisk < 7))
-        printw("(x%.2f)\n", (float)asterisk);
-    else if (asterisk >= 7)
-        printw("(x%.2f)\n", max_speed);
 }

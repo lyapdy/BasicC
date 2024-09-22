@@ -143,10 +143,12 @@ snake_t snakeMotion(snake_t snake, int c)
 {
     while (1)
     {
+       //snake = moveLeft(snake);
         if (kbhit())
         {
             c = getch();
         }
+        //else c = 'a';
         switch (c)
             {
             case 'W':
@@ -169,7 +171,7 @@ snake_t snakeMotion(snake_t snake, int c)
                 snake = moveRight(snake);
                 break;
             }
-                       
+            //snake = moveLeft(snake);           
             sleep(1);
             //system("cls");
             clearScreen();        
@@ -181,7 +183,7 @@ int main()
     struct snake_t snake = initSnake(10, 5, 2);
     printSnake(snake);
 
-    char ch = 0;
+    char ch = 'a';
 
         snakeMotion(snake, ch);
             return 0;
